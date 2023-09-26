@@ -20,6 +20,8 @@ const [firstOpening, setState] = useState(true);
 const [operationMode, setMode] = useState(null);
 const [showManualButton, manualButton] = useState(false);
 
+const [scanned, setScanned] = useState(false);
+
 
 
 useEffect(() => {
@@ -36,6 +38,9 @@ if(route.params != undefined){
     if(alreadyRead == true){
       setRead(false)
     }
+    if(scanned == true){
+      setScanned(false)
+    }
   }
 }
 
@@ -51,6 +56,7 @@ if(route.params != undefined){
       justifyContent: 'center',
     },
     marker: {
+      position:'absolute',
       width: width * 0.6,
       height: width * 0.3,
       borderColor: 'white',
@@ -58,7 +64,12 @@ if(route.params != undefined){
       borderRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex:10
+      zIndex:10,
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: "80%"
     },
     stripes: {
       position: 'absolute',
@@ -71,6 +82,7 @@ if(route.params != undefined){
     stripe: {
       height: 3,
       backgroundColor: 'white',
+      
     },
     text: {
       position:'absolute',
@@ -82,7 +94,12 @@ if(route.params != undefined){
     },
     buttonContainer:{
       position:'absolute',
-      top:'85%'
+      top:'85%',
+      textAlign:'center',
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     manualButton:{
       padding:15,
@@ -95,11 +112,10 @@ if(route.params != undefined){
     },
   });
   
-  const saveProductInDB = async (p) =>{
+  const saveProductInDB = async (p, ean) =>{
     
     const passThrought = p;
 
-      p = p.return;
 
       const storedProducts = await AsyncStorage.getItem('db');
       let products = storedProducts ? JSON.parse(storedProducts) : false;
@@ -121,7 +137,7 @@ if(route.params != undefined){
       
       await AsyncStorage.setItem('db', JSON.stringify(products));
       
-      checkMode(passThrought)
+      checkMode(passThrought, ean)
 
   }
       
@@ -177,72 +193,103 @@ if(route.params != undefined){
 
     }
   }
-  const checkIfHasEAN = async (e) =>{
+  // const checkIfHasEAN = async (e) =>{
 
-    var hasEAN = false;
+  //   var hasEAN = false;
 
-    const storedProducts = await AsyncStorage.getItem('db');
-    let products = storedProducts ? JSON.parse(storedProducts) : false;
+  //   const storedProducts = await AsyncStorage.getItem('db');
+  //   let products = storedProducts ? JSON.parse(storedProducts) : false;
 
-    if (products == false){
-      sendEAN(e);
-    }else{
+  //   if (products == false){
+  //     sendEAN(e);
+  //   }else{
 
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].ean == e) {
-          var obj = {
-            return: products[i]
-          }
-          hasEAN = true;
-          break;
-        }
-      }
-      if (hasEAN == true) {
-        checkMode(obj)
-      }else{
-        sendEAN(e);
-      }
-    }
+  //     for (let i = 0; i < products.length; i++) {
+  //       if (products[i].ean == e) {
+  //         var obj = {
+  //           return: products[i]
+  //         }
+  //         hasEAN = true;
+  //         break;
+  //       }
+  //     }
+  //     if (hasEAN == true) {
+  //       checkMode(obj)
+  //     }else{
+  //       sendEAN(e);
+  //     }
+  //   }
+  // }
+
+  const checkIfHasEAN = (res, ean) =>{
+    checkMode(res, rean)
   }
-  const checkMode = async (res) =>{
+
+  const checkMode = async (res, ean) =>{
+    
     if(operationMode === 'add'){
       navigation.navigate('Add', res);
     }
     if(operationMode === 'remove'){
-      let ean = res.return.ean;
       removeProduct(ean);
     }
     
   }
   const barcodeReceived = async (e) => { 
-    console.log(e);
+    let ean = e.data;
+    
+    setScanned(true);    
+    setRead(true)
 
-    // if (alreadyRead == false) {
-    //   setRead(true)
-    //   checkIfHasEAN(e)
-    // }
+    sendEAN(ean)
 
   };
 
   const sendEAN = async (ean) => {
 
-    axios.get(`http://brasilapi.simplescontrole.com.br/mercadoria/consulta/?ean=${ean}&access-token=63Wq-SQG9-KMfYhI2kxPrgTLgqUNQhZN`)
+    // Official and most powerfull (PAID)
+    // const options = {
+    //   method: 'GET',
+    //   url: 'https://barcode-lookup.p.rapidapi.com/v3/products',
+    //   params: {
+    //     barcode: ean
+    //   },
+    //   headers: {
+    //     'X-RapidAPI-Key': 'a06d441209msh2114de71e7a88d5p1fcf79jsnad9b756a450c',
+    //     'X-RapidAPI-Host': 'barcode-lookup.p.rapidapi.com'
+    //   }
+    // };
 
-      .then(response => {
-        let res = response.data;
-        if('message' in res){
-          Alert.alert("", "Não foi possível encontrar este produto.\n\nTente novamente ou adicione-o manualmente.")
-          navigation.navigate("Home")
-        }else{
-          saveProductInDB(res)
-        }
+    // Unnoficial Basic (Free)
 
-      })
-      .catch(error => {
-        console.log(error);
-        console.log(error);
-      });
+    const options = {
+      method: 'GET',
+      url: 'https://barcode-monster.p.rapidapi.com/' + ean,
+      headers: {
+        'X-RapidAPI-Key': 'a06d441209msh2114de71e7a88d5p1fcf79jsnad9b756a450c',
+        'X-RapidAPI-Host': 'barcode-monster.p.rapidapi.com'
+      }
+    };    
     
+    try {
+      const response = await axios.request(options);
+      
+      console.log(response.data);
+
+      if(response.data.status == "not found"){
+        Alert.alert('Erro', 'Produto não encontrado no banco de dados. Atualize para a versão premium para obter acesso ao banco de dados completo.');
+        navigation.navigate("Home")
+      }else{
+        saveProductInDB(response.data, response.data.code)
+      }
+
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
   };
 
 
@@ -302,7 +349,7 @@ if(firstOpening == true){
     <View style={styles.container}>
 
         {!firstOpening && 
-        <View>
+        <View  style={styles.preview}>
           <BarCodeScanner
             onBarCodeScanned={scanned ? undefined : barcodeReceived}
             style={styles.preview}

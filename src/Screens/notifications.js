@@ -138,8 +138,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 30,
-    paddingVertical:20,
+    paddingHorizontal: 20,
+    paddingTop:50,
+    paddingBottom:20,
     width:'100%'
   },
   title: {

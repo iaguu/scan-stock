@@ -108,16 +108,22 @@ const ProductScreen = ({ route }) => {
   const [categoria, setCategory] = useState("Geladeira");
 
 
-    if(route.params != undefined){
-      
-        const prodInfos = route.params.return;
-      
+    if(route != undefined){
+
+
+        const prodInfos = route.params;
+
+        let nomeOriginal = prodInfos.description;
+        let fraseParaRemover = "(from barcode.monster)";
+        prodInfos.description = nomeOriginal.replace(fraseParaRemover, '');
+        
+        
         var product = {
             id: null,
-            name: prodInfos.nome,
+            name: prodInfos.description,
             price: prodInfos.preco,
-            description: prodInfos.cest_descricao,
-            ean: prodInfos.ean,
+            description: prodInfos.size,
+            ean: prodInfos.code,
             image: 'https://i.pinimg.com/236x/ea/56/e3/ea56e3ce387edc4fb87963b0c6d757a1.jpg',
             quantity: quantity,
             category: null

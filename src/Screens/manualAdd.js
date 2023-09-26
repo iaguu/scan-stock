@@ -27,7 +27,7 @@ const AddProductScreen = () => {
     }else{
 
     const product = {
-      id,
+      id : 1000,
       name,
       price,
       description,
