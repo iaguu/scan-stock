@@ -1,20 +1,18 @@
 {
   "cli": {
-    "version": ">= 0.34.0"
+    "version": ">= 5.3.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
   },
   "submit": {
-    "SUBMIT_PROFILE_NAME_1": {
-    "production": {
-      "android": {
-        "serviceAccountKeyPath": "./KEY/pc-api-7205705561147009099-705-bc857b99b34a.json",
-        "track": "internal"
-      },
-      "ios": {
-        "appleId": "john@turtle.com",
-        "ascAppId": "1234567890",
-        "appleTeamId": "AB12XYZ34S"
-      }
-    }
-    }
+    "production": {}
   }
 }
