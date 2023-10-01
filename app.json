@@ -6,11 +6,12 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
-    "name": "stockCamera",
-    "slug": "stock-camera",
-    "version": "1.3.0",
+    "name": "Scan Stock",
+    "slug": "ScanStock",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -27,25 +28,27 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
-      }
+      },
+      "bundleIdentifier": "com.scanstock"
     },
-    "package": "com.iaguu.stockcamera",
+    "package": "com.scanstock",
     "extra": {
       "eas": {
-        "projectId": "81f059d1-a374-4dd3-a980-6bfb2e04b671"
+        "projectId": "1a47ba18-20a9-4f8d-b2dc-34cb906fc976"
       }
     },
     "android": {
-      "package": "com.iaguu.stockcamera"
+      "package": "com.scanstock",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     }
   },
   "web": {
     "favicon": "./assets/favicon.png"
   },
   "extra": {
-    "eas": {
-      "projectId": "81f059d1-a374-4dd3-a980-6bfb2e04b671"
-    }
+    "eas": {}
   },
   "owner": "iaguu"
 }
